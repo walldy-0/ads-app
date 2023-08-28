@@ -1,0 +1,20 @@
+{
+  "name": "ads-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "helmet": "^7.0.0",
+    "mocha": "^10.2.0",
+    "mongo-sanitize": "^1.1.0",
+    "mongoose": "^7.4.5",
+    "onchange": "^7.1.0"
+  },
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "set NODE_ENV=test&& mocha \"./{,!(node_modules|client)/**/}*.test.js\"",
+    "test:watch": "onchange \"./**/*.js\" -i -k -- yarn test"
+  }
+}
