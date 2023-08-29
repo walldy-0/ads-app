@@ -31,10 +31,25 @@ db.on('error', err => console.log('Error ' + err));
 
 // middleware
 app.use(helmet());
-app.use(cors());
+if(process.env.NODE_ENV !== 'production') {
+  app.use(
+    cors({
+      origin: ['http://localhost:3000'],
+      credentials: true,
+    })
+  );
+}
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(session({ secret: '90fee595-c27d-4018-8cee-082a2bec4ee3', store: MongoStore.create(mongoose.connection), resave: false, saveUninitialized: false }));
+app.use(session({
+  secret: '90fee595-c27d-4018-8cee-082a2bec4ee3',
+  store: MongoStore.create(mongoose.connection),
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV == 'production',
+  },
+}));
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '/client/build')));
@@ -45,10 +60,11 @@ app.use('/api', require('./routes/users.routes'));
 */
 app.use('/auth', require('./routes/auth.routes'));
 
-
+/*
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/build/index.html'));
 });
+*/
 
 app.use((req, res) => {
   res.status(404).json({message: 'Not found...'});
