@@ -1,8 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const session = require('express-session');
 
 const app = express();
 
@@ -32,14 +34,17 @@ app.use(helmet());
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(session({ secret: '90fee595-c27d-4018-8cee-082a2bec4ee3', store: MongoStore.create(mongoose.connection), resave: false, saveUninitialized: false }));
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, '/client/build')));
 
 // routes
-app.use('/api', require('./routes/ads.routes'));
+/*app.use('/api', require('./routes/ads.routes'));
 app.use('/api', require('./routes/users.routes'));
+*/
 app.use('/auth', require('./routes/auth.routes'));
+
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/build/index.html'));
